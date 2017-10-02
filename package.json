@@ -1,0 +1,79 @@
+{
+  "name": "@dfordev/typescript-node-module-seed",
+  "version": "0.0.1",
+  "description": "Seed repo for new node modules using Typescript",
+  "main": "dist/index",
+  "typings": "dist/index",
+  "bin": {
+      "alexa-smarthome-client": "./dist/client/index.js"
+  },
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "prepublish": "npm run build",
+    "test": "mocha",
+    "cover": "nyc npm test",
+    "build": "num run clean & tsc -p ./tsconfig.lib.json",
+    "lint": "tslint \"lib/**/*.ts\"",
+    "clean": "rimraf .nyc_ouput coverage dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/scallacs/typescript-node-module-seed.git"
+  },
+  "keywords": [
+    "seed",
+    "node",
+    "repo",
+    "new",
+    "projects",
+    "typescript"
+  ],
+  "author": "Stephane Leonard <stephane@dfordev.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/scallacs/typescript-node-module-seed/issues"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.0.1",
+    "@types/mocha": "^2.2.41",
+    "chai": "^4.1.0",
+    "chai-as-promised": "^7.1.1",
+    "mocha": "^3.2.0",
+    "rimraf": "^2.6.1",
+    "ts-node": "^3.3.0",
+    "tslint": "^5.5.0",
+    "typescript": "^2.4.2",
+    "nyc": "^11.2.1",
+    "istanbul": "^0.4.5"
+  },
+  "dependencies": {
+    "@types/aws-iot-device-sdk": "^1.0.0",
+    "@types/node": "^8.0.31",
+    "aws-iot-device-sdk": "^2.0.1"
+  },
+  "nyc": {
+    "include": [
+      "lib/*.ts",
+      "lib/**/*.ts"
+    ],
+    "exclude": [
+      "lib/*.spec.ts",
+      "lib/**/*.spec.ts",
+      "typings",
+      "test/typings.d.ts"
+    ],
+    "extension": [
+      ".ts"
+    ],
+    "require": [],
+    "reporter": [
+      "json",
+      "html"
+    ],
+    "all": true
+  },
+  "homepage": "https://github.com/scallacs/typescript-node-module-seed#readme"
+}

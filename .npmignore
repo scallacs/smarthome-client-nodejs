@@ -1,0 +1,4 @@
+npm-debug
+coverage
+*.log
+.nyc_output
