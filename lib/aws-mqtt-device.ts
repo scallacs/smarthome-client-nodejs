@@ -54,6 +54,7 @@ export class AWSMqttDevice implements DeviceInterface, DirectiveListenerInterfac
         if (typeof message !== 'string') {
             message = JSON.stringify(message);
         }
+        console.log('\t- Send on topic ' + topic);
         this.device.publish(this.topic, message);
         return Promise.resolve();
     }
