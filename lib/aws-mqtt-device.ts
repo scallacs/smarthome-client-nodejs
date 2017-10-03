@@ -16,7 +16,7 @@ export class AWSMqttDevice implements DeviceInterface, DirectiveListenerInterfac
     }
 
     _getOutputTopic(type: 'ack' | 'success' | 'error') {
-        return this.topic + '/out' + type;
+        return this.topic + '/out/' + type;
     }
     _getInputTopic() {
         return this.topic + '/in';
