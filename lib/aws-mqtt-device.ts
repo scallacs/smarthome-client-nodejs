@@ -4,6 +4,7 @@ import { IotDirectiveInterface } from "./iot-directive-interface";
 import { DirectiveListenerInterface } from "./directive-listener-interface";
 import { DirectiveDispatcherInterface } from "./directive-dispatcher-interface";
 import * as Alexa from "./alexa";
+import { Granted } from "mqtt";
 
 export class AWSMqttDevice implements DeviceInterface, DirectiveListenerInterface {
 
@@ -108,8 +109,8 @@ export class AWSMqttDevice implements DeviceInterface, DirectiveListenerInterfac
 
         console.log('Subscribing to topic: ');
         console.log('\t- ' + this._getInputTopic());
-        this.device.subscribe(this._getInputTopic(), (message: any) => { });
-        this.device.subscribe(this._getInputTopic() + '/#', (message: any) => { });
+        this.device.subscribe(this._getInputTopic(), undefined, (err: any, granted: Granted): void => { });
+        this.device.subscribe(this._getInputTopic() + '/#', undefined, (err: any, granted: Granted): void => { });
     }
 
 }
