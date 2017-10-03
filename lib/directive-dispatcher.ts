@@ -3,7 +3,7 @@ import { DirectiveDispatcherInterface } from "./directive-dispatcher-interface";
 import { IotDirectiveInterface } from "./iot-directive-interface";
 
 export class DirectiveDispatcher implements DirectiveDispatcherInterface {
-    protected _registeredDirectives: {[key: string]: any} = {};
+    protected _registeredDirectives: { [key: string]: any } = {};
 
     dispatch(directives: Array<IotDirectiveInterface> | IotDirectiveInterface) {
         if (!Array.isArray(directives)) {
@@ -11,17 +11,17 @@ export class DirectiveDispatcher implements DirectiveDispatcherInterface {
         }
         for (let directive of directives) {
             let actions = this.getDirectiveActions(directive);
-            if (actions.length > 0){
+            if (actions.length > 0) {
                 console.log('[DIRECTIVE] ' + directive.fullName() + ' => ' + actions.length + ' action(s) defined');
                 let index = 0;
-                for (let action of actions){
+                for (let action of actions) {
                     console.log('\t- ' + (index + 1) + ') Running...');
                     action(directive);
                     index++;
                 }
             }
-            else{
-                console.warn('[DIRECTIVE] ' + directive.fullName() + ' => NO ACTION REGISTERED' );
+            else {
+                console.warn('[DIRECTIVE] ' + directive.fullName() + ' => NO ACTION REGISTERED');
                 // console.log(this._registeredDirectives);
             }
         }
@@ -57,17 +57,22 @@ export class DirectiveDispatcher implements DirectiveDispatcherInterface {
         return true;
     }
 
-    registerAction(actionId: string, action: any): void {
-        if (!(actionId in this._registeredDirectives)) {
-            this._registeredDirectives[actionId] = [];
+    registerAction(actionIds: string | string[], action: any): void {
+        if (!Array.isArray(actionIds)) {
+            actionIds = [actionIds];
         }
-        // if (!(name in this._registeredDirectives[namespace])) {
-        //     this._registeredDirectives[namespace][name] = [];
-        // }
-        // console.log('\t-' + namespace + '.' + name + ' registered!')
-        console.log('\t-' + actionId + ' registered!');
-        // this._registeredDirectives[namespace][name].push(action);
-        this._registeredDirectives[actionId].push(action);
+        for (let actionId of actionIds) {
+            if (!(actionId in this._registeredDirectives)) {
+                this._registeredDirectives[actionId] = [];
+            }
+            // if (!(name in this._registeredDirectives[namespace])) {
+            //     this._registeredDirectives[namespace][name] = [];
+            // }
+            // console.log('\t-' + namespace + '.' + name + ' registered!')
+            console.log('\t-' + actionId + ' registered!');
+            // this._registeredDirectives[namespace][name].push(action);
+            this._registeredDirectives[actionId].push(action);
+        }
     }
 
 }

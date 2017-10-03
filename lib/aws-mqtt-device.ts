@@ -26,7 +26,7 @@ export class AWSMqttDevice implements DeviceInterface, DirectiveListenerInterfac
         console.log('[ACK] ' + directive.fullName());
         return this._send(this._getOutputTopic('ack'), {
             'directive': directive.fullName(),
-            'result': 'ack'
+            'status': 'ack'
         });
     }
 
@@ -34,7 +34,7 @@ export class AWSMqttDevice implements DeviceInterface, DirectiveListenerInterfac
         console.log('[FAILURE] ' + directive.fullName() + ' => ' + error.message);
         return this._send(this._getOutputTopic('error'), {
             'directive': directive.fullName(),
-            'result': 'failure',
+            'status': 'failure',
             'payload': {
                 'message': error.message
             }
@@ -45,7 +45,7 @@ export class AWSMqttDevice implements DeviceInterface, DirectiveListenerInterfac
         console.log('[SUCCESS] ' + directive.fullName());
         return this._send(this._getOutputTopic('success'), {
             'directive': directive.fullName(),
-            'result': 'success',
+            'status': 'success',
             'payload': {}
         });
     }

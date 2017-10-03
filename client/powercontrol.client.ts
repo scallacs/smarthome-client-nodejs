@@ -51,10 +51,10 @@ if (gpio) {
 
 console.log('Trying to connect to ' + deviceConnOptions.host);
 
-dispatcher.registerAction('Alexa.PowerController.TurnOn', (directive: IotDirectiveInterface) => {
+let changePin = (directive: IotDirectiveInterface, value: boolean) => {
     device.ack(directive);
     if (gpio) {
-        gpio.write(ON_OFF_PIN, true, (err: any) => {
+        gpio.write(ON_OFF_PIN, value, (err: any) => {
             if (err) {
                 device.failure(directive, err);
             }
@@ -67,23 +67,13 @@ dispatcher.registerAction('Alexa.PowerController.TurnOn', (directive: IotDirecti
         device.failure(directive, new Error('GPIO is not enabled on this device'));
     }
     return true;
+};
+
+dispatcher.registerAction(['Alexa.PowerController.TurnOn', 'Alexa.ConnectedHome.Control.TurnOnRequest'], (directive: IotDirectiveInterface) => {
+    changePin(directive, true);
 });
-dispatcher.registerAction('Alexa.PowerController.TurnOff', (directive: IotDirectiveInterface) => {
-    device.ack(directive);
-    if (gpio) {
-        gpio.write(ON_OFF_PIN, true, (err: any) => {
-            if (err) {
-                device.failure(directive, err);
-            }
-            else {
-                device.success(directive);
-            }
-        });
-    }
-    else {
-        device.failure(directive, new Error('GPIO is not enabled on this device'));
-    }
-    return true;
+dispatcher.registerAction(['Alexa.PowerController.TurnOff', 'Alexa.ConnectedHome.Control.TurnOffRequest'], (directive: IotDirectiveInterface) => {
+    changePin(directive, false);
 });
 
 // TODO register not available actions
