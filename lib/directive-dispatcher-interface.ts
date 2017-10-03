@@ -4,6 +4,6 @@ export interface DirectiveDispatcherInterface {
 
     dispatch(directives: Array<IotDirectiveInterface> | IotDirectiveInterface): void;
 
-    registerAction(namespace: string, name: string, action: any): void;
+    registerAction(actionId: string, action: any): void;
 
 }
