@@ -29,4 +29,8 @@ describe('AwsMqttDevice', () => {
             }));
         });        
     });
+
+    it('output topic', () => {
+        // TODO
+    });
 });

@@ -60,8 +60,8 @@ export default class extends Command {
 
         console.log('Trying to connect to ' + deviceConnOptions.host);
 
-        dispatcher.registerAction(['Alexa.PowerController.TurnOn', 'Alexa.ConnectedHome.Control.TurnOnRequest'], new DeviceAction.WritePinAction(gpio.promise, pin, false));
-        dispatcher.registerAction(['Alexa.PowerController.TurnOff', 'Alexa.ConnectedHome.Control.TurnOffRequest'], new DeviceAction.WritePinAction(gpio.promise, pin, true));
+        dispatcher.registerAction(['Alexa.PowerController.TurnOn', 'Alexa.ConnectedHome.Control.TurnOnRequest'], new DeviceAction.WritePinAction(gpio.promise, pin, true));
+        dispatcher.registerAction(['Alexa.PowerController.TurnOff', 'Alexa.ConnectedHome.Control.TurnOffRequest'], new DeviceAction.WritePinAction(gpio.promise, pin, false));
 
         // TODO register not available actions
         // dispatcher.registerAction('')
