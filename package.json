@@ -5,7 +5,7 @@
   "main": "dist/index",
   "typings": "dist/index",
   "bin": {
-    "alexa-smarthome-client": "./dist/client/index.js"
+    "smarthome-powercontrol": "./dist/client/powercontrol.js"
   },
   "directories": {
     "lib": "lib",
@@ -15,7 +15,7 @@
     "prepublish": "npm run build",
     "test": "mocha",
     "cover": "nyc npm test",
-    "build": "num run clean & tsc -p ./tsconfig.lib.json",
+    "build": "npm run clean & tsc -p ./tsconfig.lib.json",
     "lint": "tslint \"lib/**/*.ts\"",
     "clean": "rimraf .nyc_ouput coverage dist"
   },
@@ -53,6 +53,7 @@
     "@types/aws-iot-device-sdk": "^1.0.0",
     "@types/node": "^8.0.31",
     "aws-iot-device-sdk": "^2.0.1",
+    "clime": "^0.5.5",
     "rpi-gpio": "^0.9.1"
   },
   "nyc": {

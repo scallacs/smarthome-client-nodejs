@@ -1,4 +1,4 @@
-export interface IotDirectiveInterface{
+export interface IotDirectiveInterface<PayloadType>{
 
     // Header related
     namespace(): string;
@@ -9,6 +9,6 @@ export interface IotDirectiveInterface{
     endpoint(): void;
 
     // Payload
-    payload(): any;
+    payload(): PayloadType;
 
 }

@@ -1,6 +1,6 @@
 import { IotDirectiveInterface } from "../iot-directive-interface";
 
-export class Directive implements IotDirectiveInterface {
+export class Directive implements IotDirectiveInterface<any> {
 
     constructor(public _data: any) {
         // console.log('Building directive with payload: ', this._data);

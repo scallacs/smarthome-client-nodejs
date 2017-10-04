@@ -1,33 +1,40 @@
 
 import { DirectiveDispatcherInterface } from "./directive-dispatcher-interface";
 import { IotDirectiveInterface } from "./iot-directive-interface";
+import { ActionInterface, ActionType } from "./device-action";
 
 export class DirectiveDispatcher implements DirectiveDispatcherInterface {
     protected _registeredDirectives: { [key: string]: any } = {};
 
-    dispatch(directives: Array<IotDirectiveInterface> | IotDirectiveInterface) {
+    dispatch(directives: Array<IotDirectiveInterface<any>> | IotDirectiveInterface<any>): Promise<any> {
         if (!Array.isArray(directives)) {
             directives = [directives];
         }
+        let promises: Promise<any>[] = [];
         for (let directive of directives) {
             let actions = this.getDirectiveActions(directive);
             if (actions.length > 0) {
                 console.log('[DIRECTIVE] ' + directive.fullName() + ' => ' + actions.length + ' action(s) defined');
                 let index = 0;
-                for (let action of actions) {
-                    console.log('\t- ' + (index + 1) + ') Running...');
-                    action(directive);
-                    index++;
-                }
+                promises = actions.map((action: ActionType, index: number) => {
+                    console.log('\t- ' + (index + 1) + ') Running action ' + action.constructor.name);
+                    if (typeof action === 'function'){
+                        return action(directive);
+                    }
+                    else { //} if (action instanceof ActionInterface){
+                        return (action as ActionInterface).perform(directive);
+                    }
+                });
             }
             else {
                 console.warn('[DIRECTIVE] ' + directive.fullName() + ' => NO ACTION REGISTERED');
                 // console.log(this._registeredDirectives);
             }
         }
+        return Promise.all(promises);
     }
 
-    getDirectiveActions(directive: IotDirectiveInterface): Array<any> {
+    getDirectiveActions(directive: IotDirectiveInterface<any>): Array<any> {
         let actionId = directive.fullName();
         // let namespace = directive.namespace();
         // if (!(namespace in this._registeredDirectives)) {
@@ -43,7 +50,7 @@ export class DirectiveDispatcher implements DirectiveDispatcherInterface {
         return this._registeredDirectives[actionId];
     }
 
-    isRegistered(directive: IotDirectiveInterface) {
+    isRegistered(directive: IotDirectiveInterface<any>) {
         let actionId = directive.fullName();
         // if (!(namespace in this._registeredDirectives)) {
         //     return false;
@@ -57,7 +64,8 @@ export class DirectiveDispatcher implements DirectiveDispatcherInterface {
         return true;
     }
 
-    registerAction(actionIds: string | string[], action: any): void {
+
+    registerAction(actionIds: string | string[], action: ActionType | Array<ActionType>): void {
         if (!Array.isArray(actionIds)) {
             actionIds = [actionIds];
         }

@@ -10,7 +10,10 @@ export class AWSMqttDevice implements DeviceInterface, DirectiveListenerInterfac
 
     public topic: string;
 
-    constructor(public device: awsIot.device, topic: string, public dispatcher: DirectiveDispatcherInterface) {
+    constructor(
+        public awsDevice: awsIot.device,
+        topic: string,
+        public dispatcher: DirectiveDispatcherInterface) {
         this.topic = topic;
         console.log('Building device id: ' + 'TODO');
     }
@@ -22,7 +25,16 @@ export class AWSMqttDevice implements DeviceInterface, DirectiveListenerInterfac
         return this.topic + '/in';
     }
 
-    ack(directive: IotDirectiveInterface): Promise<any> {
+    start() {
+        return this
+            .connect()
+            .then(() => {
+                console.log('Connected to endpoint!');
+                this.listen();
+            });
+    }
+
+    ack(directive: IotDirectiveInterface<any>): Promise<any> {
         console.log('[ACK] ' + directive.fullName());
         return this._send(this._getOutputTopic('ack'), {
             'directive': directive.fullName(),
@@ -30,7 +42,7 @@ export class AWSMqttDevice implements DeviceInterface, DirectiveListenerInterfac
         });
     }
 
-    failure(directive: IotDirectiveInterface, error: any): Promise<any> {
+    failure(directive: IotDirectiveInterface<any>, error: any): Promise<any> {
         console.log('[FAILURE] ' + directive.fullName() + ' => ' + error.message);
         return this._send(this._getOutputTopic('error'), {
             'directive': directive.fullName(),
@@ -41,7 +53,7 @@ export class AWSMqttDevice implements DeviceInterface, DirectiveListenerInterfac
         });
     }
 
-    success(directive: IotDirectiveInterface): Promise<any> {
+    success(directive: IotDirectiveInterface<any>): Promise<any> {
         console.log('[SUCCESS] ' + directive.fullName());
         return this._send(this._getOutputTopic('success'), {
             'directive': directive.fullName(),
@@ -55,18 +67,18 @@ export class AWSMqttDevice implements DeviceInterface, DirectiveListenerInterfac
             message = JSON.stringify(message);
         }
         console.log('\t- Send on topic ' + topic);
-        this.device.publish(this.topic, message);
+        this.awsDevice.publish(this.topic, message);
         return Promise.resolve();
     }
 
     connect(): Promise<any> {
         return new Promise((resolve, reject) => {
-            this.device
+            this.awsDevice
                 .on('connect', function () {
                     console.log('connect');
                     resolve();
                 });
-            this.device.on('error', (err) => {
+            this.awsDevice.on('error', (err) => {
                 reject(err);
             });
         });
@@ -74,7 +86,7 @@ export class AWSMqttDevice implements DeviceInterface, DirectiveListenerInterfac
 
 
     disconnect(): Promise<any> {
-        this.device.end();
+        this.awsDevice.end();
         return Promise.resolve();
     }
 
@@ -83,7 +95,7 @@ export class AWSMqttDevice implements DeviceInterface, DirectiveListenerInterfac
         // if (!_isConnected){
         //     this.connect();
         // }
-        this.device.on('message', (topic: string, buffer: any) => {
+        this.awsDevice.on('message', (topic: string, buffer: any) => {
             let payload = buffer.toString();
             console.log('[MESSAGE] ');// => ' + payload.toString());
             console.log('\t- Topic: ', topic);
@@ -99,8 +111,17 @@ export class AWSMqttDevice implements DeviceInterface, DirectiveListenerInterfac
             }
             try {
                 console.warn('\t- Dispatching directive...');
+                // TODO change constructeur
                 let directive = new Alexa.Directive(payload['directive']);
-                this.dispatcher.dispatch(directive);
+                let promise = this.dispatcher.dispatch(directive);
+
+                promise
+                    .then(() => {
+                        this.success(directive);
+                    })
+                    .catch((err) => {
+                        this.failure(directive, err);
+                    });
             }
             catch (err) {
                 console.error('\t- Cannot process directive due to error: ', err.message);
@@ -110,8 +131,8 @@ export class AWSMqttDevice implements DeviceInterface, DirectiveListenerInterfac
 
         console.log('Subscribing to topic: ');
         console.log('\t- ' + this._getInputTopic());
-        this.device.subscribe(this._getInputTopic(), undefined, (err: any, granted: Granted): void => { });
-        this.device.subscribe(this._getInputTopic() + '/#', undefined, (err: any, granted: Granted): void => { });
+        this.awsDevice.subscribe(this._getInputTopic(), undefined, (err: any, granted: Granted): void => { });
+        this.awsDevice.subscribe(this._getInputTopic() + '/#', undefined, (err: any, granted: Granted): void => { });
     }
 
 }

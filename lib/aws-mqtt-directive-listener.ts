@@ -26,7 +26,7 @@ export class AWSMqttDirectiveListener implements DirectiveListenerInterface {
             }
         });
 
-        this.device.subscribe('smartlight/device-1/in', (message: any) => {
+        this.device.subscribe('smartlight/device-1/in', undefined, (message: any) => {
             // TODO 
         });
     }

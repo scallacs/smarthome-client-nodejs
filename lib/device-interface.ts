@@ -5,20 +5,22 @@ export interface DeviceInterface {
     connect(): Promise<any>;
 
     disconnect(): Promise<any>;
-    
+
+    start(): Promise<any>;
+
     /**
      * Acknowledge reception of message
      */
-    ack(directive: IotDirectiveInterface): Promise<any>;
+    ack(directive: IotDirectiveInterface<any>): Promise<any>;
 
     /**
      * Failure
      */
-    failure(directive: IotDirectiveInterface, error: any): Promise<any>;
+    failure(directive: IotDirectiveInterface<any>, error: any): Promise<any>;
 
     /**
      * Success
      */
-    success(directive: IotDirectiveInterface): Promise<any>;
+    success(directive: IotDirectiveInterface<any>): Promise<any>;
     
 }
