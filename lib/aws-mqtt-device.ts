@@ -15,7 +15,6 @@ export class AWSMqttDevice implements DeviceInterface, DirectiveListenerInterfac
         topic: string,
         public dispatcher: DirectiveDispatcherInterface) {
         this.topic = topic;
-        console.log('Building device id: ' + 'TODO');
     }
 
     _getOutputTopic(type: 'ack' | 'success' | 'error') {

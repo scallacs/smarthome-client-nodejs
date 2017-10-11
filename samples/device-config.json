@@ -1,0 +1,18 @@
+[
+    {
+        "id": "device-1",
+        "pin": 35
+    },
+    {
+        "id": "device-2",
+        "pin": 36
+    },
+    {
+        "id": "device-3",
+        "pin": 37
+    },
+    {
+        "id": "device-4",
+        "pin": 38
+    }
+]
